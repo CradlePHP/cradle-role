@@ -154,14 +154,14 @@ return [
             'role_name'         => 'Guest',
             'role_permissions'  => json_encode([
                 [
-                    "path": "(?!/admin)/**",
-                    "label": "Guest",
-                    "method": "all"
+                    "path"      => "(?!/admin)/**",
+                    "label"     => "Guest",
+                    "method"    => "all"
                 ],
                 [
-                    "path": "/rest/**",
-                    "label": "Rest",
-                    "method": "all"
+                    "path"      => "/rest/**",
+                    "label"     => "Rest",
+                    "method"    => "all"
                 ]
             ]),
             'role_flag'         => 1
