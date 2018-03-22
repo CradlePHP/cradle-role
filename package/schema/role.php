@@ -3,7 +3,7 @@ return [
     'disable' => '1',
     'singular' => 'Role',
     'plural' => 'Roles',
-    'name' => 'role',
+    'name' => 'auth',
     'icon' => 'fas fa-key',
     'detail' => 'An approach to restricting system access to authorized users',
     'fields' => [
@@ -39,7 +39,7 @@ return [
             'label' => 'Permissions',
             'name' => 'permissions',
             'field' => [
-                'type' => 'meta',
+                'type' => 'json',
             ],
             'validation' => [
                 [
@@ -64,7 +64,7 @@ return [
             'label' => 'Flag',
             'name' => 'flag',
             'field' => [
-                'type' => 'active',
+                'type' => 'int',
             ],
             'list' => [
                 'format' => 'hide',
@@ -154,26 +154,16 @@ return [
             'role_name'         => 'Guest',
             'role_permissions'  => json_encode([
                 [
-                    "path"      => "(?!/admin)/**",
-                    "label"     =>  "Frontend Access",
-                    "method"    => "all"
-                ]
-            ]),
-            'role_created'      => '2018-02-03 01:45:16',
-            'role_updated'      => '2018-02-03 01:45:16',
-            'role_flag'         => 1
-        ],
-        [
-            'role_name'         => 'Rest',
-            'role_permissions'  => json_encode([
+                    "path": "(?!/admin)/**",
+                    "label": "Guest",
+                    "method": "all"
+                ],
                 [
-                    "path"      => "/rest/**",
-                    "label"     => "Rest Access",
-                    "method"    => "all"
+                    "path": "/rest/**",
+                    "label": "Rest",
+                    "method": "all"
                 ]
             ]),
-            'role_created'      => '2018-02-03 01:45:16',
-            'role_updated'      => '2018-02-03 01:45:16',
             'role_flag'         => 1
         ]
     ],
