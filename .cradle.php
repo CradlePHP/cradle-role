@@ -6,3 +6,14 @@ require_once __DIR__ . '/package/events.php';
 require_once __DIR__ . '/src/events.php';
 require_once __DIR__ . '/src/controller.php';
 require_once __DIR__ . '/package/helpers.php';
+
+// $this->preprocess(function ($request, $response) {
+//     $path = $request->getPath('string');
+//     $method = $request->getMethod();
+//
+//     $permitted = false;
+//
+//     if (!$permitted) {
+//         return $this->package('global')->redirect('/404');
+//     }
+// });

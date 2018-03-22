@@ -3,7 +3,7 @@ return [
     'disable' => '1',
     'singular' => 'Role',
     'plural' => 'Roles',
-    'name' => 'auth',
+    'name' => 'role',
     'icon' => 'fas fa-key',
     'detail' => 'An approach to restricting system access to authorized users',
     'fields' => [
@@ -39,7 +39,7 @@ return [
             'label' => 'Permissions',
             'name' => 'permissions',
             'field' => [
-                'type' => 'json',
+                'type' => 'meta',
             ],
             'validation' => [
                 [
@@ -64,7 +64,7 @@ return [
             'label' => 'Flag',
             'name' => 'flag',
             'field' => [
-                'type' => 'int',
+                'type' => 'active',
             ],
             'list' => [
                 'format' => 'hide',
@@ -145,7 +145,7 @@ return [
     ],
     'relations' => [
         [
-            'many' => '1',
+            'many' => '2',
             'name' => 'auth'
         ]
     ],
@@ -155,17 +155,28 @@ return [
             'role_permissions'  => json_encode([
                 [
                     "path"      => "(?!/admin)/**",
-                    "label"     => "Guest",
-                    "method"    => "all"
-                ],
-                [
-                    "path"      => "/rest/**",
-                    "label"     => "Rest",
+                    "label"     => "Guest Access",
                     "method"    => "all"
                 ]
             ]),
-            'role_flag'         => 1
+            'role_flag'         => 1,
+            'role_created'  => '2018-02-03 01:45:16',
+            'role_updated'  => '2018-02-03 01:45:16'
+        ],
+        [
+            'role_name'         => 'Rest',
+            'role_permissions'  => json_encode([
+                [
+                    "path"      => "/rest/**",
+                    "label"     => "Rest Access",
+                    "method"    => "all"
+                ]
+            ]),
+            'role_flag'         => 1,
+            'role_created'  => '2018-02-03 01:45:16',
+            'role_updated'  => '2018-02-03 01:45:16'
         ]
     ],
     'suggestion' => '{{role_name}}'
+
 ];
