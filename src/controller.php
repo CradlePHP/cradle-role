@@ -41,7 +41,7 @@ $this->get('/admin/role/create', function ($request, $response) {
 
     $body = $this
         ->package('cradlephp/cradle-role')
-        ->template('form', $data, [
+        ->template('role/form', $data, [
             'role_permission'
         ]);
 
@@ -179,7 +179,7 @@ $this->get('/admin/role/search', function ($request, $response) {
 
     $body = $this
         ->package('cradlephp/cradle-role')
-        ->template('search', $data);
+        ->template('role/search', $data);
 
     //Set Content
     $response
@@ -221,12 +221,12 @@ $this->get('/admin/role/update/:role_id', function ($request, $response) {
     //----------------------------//
     // 2. Render Template
     //Render body
-    $class = 'page-role-create';
-    $data['title'] = $this->package('global')->translate('Role Create');
+    $class = 'page-role-update';
+    $data['title'] = $this->package('global')->translate('Role Update');
 
     $body = $this
         ->package('cradlephp/cradle-role')
-        ->template('form', $data, [
+        ->template('role/form', $data, [
             'role_permission'
         ]);
 
@@ -300,5 +300,69 @@ $this->post('/admin/role/update/:role_id', function ($request, $response) {
 
     //redirect
     $this->package('global')->redirect('/admin/role/search');
+});
+
+/**
+ * Render the Role Auth Search
+ *
+ * @param Request $request
+ * @param Response $response
+ */
+$cradle->get('/admin/role/auth/search', function ($request, $response) {
+    //----------------------------//
+    // 2. Render Template
+    //Render body
+    $class = 'page-access-search';
+    $data['title'] = $this->package('global')->translate('Access');
+
+    $body = $this
+        ->package('cradlephp/cradle-role')
+        ->template('auth/search', $data);
+
+    //Set Content
+    $response
+        ->setPage('title', $data['title'])
+        ->setPage('class', $class)
+        ->setContent($body);
+
+    //if we only want the body
+    if ($request->getStage('render') === 'body') {
+        return;
+    }
+
+    //Render admin page
+    $this->trigger('admin-render-page', $request, $response);
+});
+
+/**
+ * Render the Role Auth Create
+ *
+ * @param Request $request
+ * @param Response $response
+ */
+$cradle->get('/admin/role/auth/create', function ($request, $response) {
+    //----------------------------//
+    // 2. Render Template
+    //Render body
+    $class = 'page-access-create';
+    $data['title'] = $this->package('global')->translate('Access Create');
+
+    $body = $this
+        ->package('cradlephp/cradle-role')
+        ->template('auth/form', $data);
+
+    //Set Content
+    $response
+        ->setPage('title', $data['title'])
+        ->setPage('class', $class)
+        ->setContent($body);
+
+    //if we only want the body
+    if ($request->getStage('render') === 'body') {
+        return;
+    }
+
+    //Render admin page
+    $this->trigger('admin-render-page', $request, $response);
 });
 // Front End Controllers
