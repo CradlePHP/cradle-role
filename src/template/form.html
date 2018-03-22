@@ -1,0 +1,71 @@
+<style>
+    .permission-list {
+        list-style: none;
+        padding: 0;
+    }
+
+    .permission-list .permission-input {
+        margin-top: 10px;
+    }
+</style>
+
+
+<nav aria-label="breadcrumb">
+    <ol class="breadcrumb">
+        <li class="breadcrumb-item">
+            <a href="/admin">
+                <i class="fas fa-home"></i> Admin
+            </a>
+        </li>
+        <li class="breadcrumb-item" aria-current="page">
+            <a href="/admin/role/search">
+                <i class="fas fa-key"></i> Roles
+            </a>
+        </li>
+        <li class="breadcrumb-item active" aria-current="page">
+             {{title}}
+        </li>
+    </ol>
+</nav>
+
+<div class="main-padding">
+    <h3 class="main-title"><i class="fa fa-key"></i> {{title}}</h3>
+    <form enctype="multipart/form-data" method="post" data-do="permission-field">
+        <div class="form-group">
+            <label class="control-label">Role Name</label>
+            <input
+                class="form-control {{#if errors.role_name}}is-invalid{{/if}}"
+                placeholder="Super Admin"
+                name="role_name"
+                {{#if item.role_flag}}
+                readonly="readonly"
+                {{/if}}
+                value="{{item.role_name}}"
+                type="text">
+            {{#if errors.role_name}}
+            <div class="invalid-feedback">
+                {{errors.role_name}}
+            </div>
+            {{/if}}
+        </div>
+        <div class="table-overflow {{#if errors.role_permissions}}form-control is-invalid{{/if}}">
+            <label class="control-label">Permissions</label>
+            <div
+        </div>
+        <button type="button" class="btn btn-success permission-action-add">
+            <i class="fas fa-plus"></i>
+            Add Permission
+        </button>
+        <ul class="permission-list">
+            {{#each item.role_permissions}}
+                {{> role_permission}}
+            {{/each}}
+        </ul>
+        <div class="clear form-group">
+            <hr/>
+            <input type="hidden" name="csrf" value="" />
+            <button type="submit" class="btn btn-primary">Submit</button>
+        </div>
+        <span class="help-text has-error"></span>
+    </form>
+</div>

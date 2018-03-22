@@ -10,8 +10,19 @@
  * @param Response $response
  */
 $this->on('role-create', function ($request, $response) {
+    //----------------------------//
+    // 1. Get Data
+    $data = [];
+    if($request->hasStage()) {
+        $data = $request->getStage();
+    }
+
     //set role as schema
     $request->setStage('schema', 'role');
+
+    if ($data['role_permissions']) {
+        $request->setStage('role_permissions', json_encode($data['role_permissions']));
+    }
 
     //trigger model create
     $this->trigger('system-model-create', $request, $response);
@@ -82,6 +93,10 @@ $this->on('role-search', function ($request, $response) {
 $this->on('role-update', function ($request, $response) {
     //set role as schema
     $request->setStage('schema', 'role');
+
+    if ($data['role_permissions']) {
+        $request->setStage('role_permissions', json_encode($data['role_permissions']));
+    }
 
     //trigger model update
     $this->trigger('system-model-update', $request, $response);

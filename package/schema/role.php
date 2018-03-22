@@ -72,7 +72,7 @@ return [
             'detail' => [
                 'format' => 'hide',
             ],
-            'default' => '1',
+            'default' => '0',
             'filterable' => '1',
             'sortable' => '1'
         ],
