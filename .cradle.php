@@ -7,13 +7,68 @@ require_once __DIR__ . '/src/events.php';
 require_once __DIR__ . '/src/controller.php';
 require_once __DIR__ . '/package/helpers.php';
 
-// $this->preprocess(function ($request, $response) {
-//     $path = $request->getPath('string');
-//     $method = $request->getMethod();
-//
-//     $permitted = false;
-//
-//     if (!$permitted) {
-//         return $this->package('global')->redirect('/404');
-//     }
-// });
+use Cradle\Event\EventHandler;
+
+$this->preprocess(function ($request, $response) {
+    //return true;
+    // get default auth id
+    $authId = $request->getSession('me', 'auth_id');
+
+    // get default role permissions
+    $permissions[] = [
+        'path' => '(?!/admin)/**',
+        'label' => 'Guest Access',
+        'method' => 'all'
+    ];
+
+    // if session role permission override
+    if($request->getSession('me', 'role_permissions')) {
+        $permissions = array_merge($permissions, $request->getSession('me', 'role_permissions'));
+    }
+
+    // if role permission override
+    if ($request->hasStage('role_permissions')) {
+        // get role permissions
+        $permissions = array_merge($permissions, $request->getStage('role_permissions'));
+    }
+
+    // allow auth id 1
+    if($authId && $authId == 1) {
+        // skip permission check
+        return true;
+    }
+
+    //  path
+    $home = $this->package('global')->config('settings', 'home');
+    if ($request->getPath('string') === $home) {
+        return true;
+    }
+
+    // initialize router
+    $router = new \Cradle\Http\Router;
+
+    // iterate on each permissions
+    foreach($permissions as $permission) {
+        // validate route
+        $router->route(
+            $permission['method'],
+            $permission['path'],
+            function($request, $response) {
+            //if good, let's end checking
+            return false;
+        });
+    }
+
+    // process router
+    $router->process($request, $response, 1);
+
+    //let's interpret the results
+    if($router->getEventHandler()->getMeta() ===  EventHandler::STATUS_INCOMPLETE) {
+        //the role passes
+        return true;
+    }
+
+    $this->response->setFlash('Request not Permitted', 'error');
+
+    throw new Exception('Request not Permitted');
+});

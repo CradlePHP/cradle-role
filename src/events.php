@@ -215,3 +215,55 @@ $this->on('role-update', function ($request, $response) {
     //trigger model update
     $this->trigger('system-model-update', $request, $response);
 });
+
+
+/**
+ * Auth Detail Job
+ *
+ * @param Request $request
+ * @param Response $response
+ */
+$cradle->on('auth-detail', function ($request, $response) {
+    //if the auth-detail from auth returned an error
+    //----------------------------//
+    // 1. Check Error
+    if ($response->isError()) {
+        //do nothing
+        return;
+    }
+
+    //----------------------------//
+    // 2. Get Response Data
+    $data = $response->getResults();
+
+    // set schema
+    $schema = Schema::i('auth');
+
+    // get role
+    // filter by auth id
+    $search = $schema->model()->service('sql')->getResource()
+        ->search($schema->getName())
+        ->leftJoinUsing('role_auth', 'auth_id')
+        ->leftJoinUsing('role', 'role_id')
+        ->addFilter('auth_id = %s', $data['auth_id']);
+
+    $row = $search->getRow();
+
+    // prepare data
+    if ($row['role_permissions']) {
+        $row['role_permissions'] = json_decode($row['role_permissions'], true);
+    } else {
+        // set default permissions
+        $row['role_permissions'][] = [
+            'path'      => '(?!/admin)/**',
+            'label'     => 'Guest Access',
+            'method'    => 'all'
+        ];
+    }
+
+    // merge results
+    $results = array_merge($data, $row);
+
+    // set response results
+    $response->setResults($results);
+});
