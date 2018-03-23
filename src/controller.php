@@ -303,21 +303,31 @@ $this->post('/admin/role/update/:role_id', function ($request, $response) {
 });
 
 /**
- * Render the Role Auth Search
+ * Render the Access Search
  *
  * @param Request $request
  * @param Response $response
  */
-$cradle->get('/admin/role/auth/search', function ($request, $response) {
+$cradle->get('/admin/access/search', function ($request, $response) {
     //----------------------------//
-    // 2. Render Template
+    // 1. Prepare Data
+    $data = $request->getStage();
+
+    //----------------------------//
+    // 2. Process Request
+    $this->trigger('access-search', $request, $response);
+
+    $data = $response->getResults();
+
+    //----------------------------//
+    // 3. Render Template
     //Render body
     $class = 'page-access-search';
     $data['title'] = $this->package('global')->translate('Access');
 
     $body = $this
         ->package('cradlephp/cradle-role')
-        ->template('auth/search', $data);
+        ->template('access/search', $data);
 
     //Set Content
     $response
@@ -335,12 +345,21 @@ $cradle->get('/admin/role/auth/search', function ($request, $response) {
 });
 
 /**
- * Render the Role Auth Create
+ * Render the Access Create
  *
  * @param Request $request
  * @param Response $response
  */
-$cradle->get('/admin/role/auth/create', function ($request, $response) {
+$cradle->get('/admin/access/create', function ($request, $response) {
+    // 1. Prepare Data
+    // trigger role detail
+    $data = ['item' => $request->getPost()];
+
+    if ($response->isError()) {
+        $response->setFlash($response->getMessage(), 'error');
+        $data['errors'] = $response->getValidation();
+    }
+
     //----------------------------//
     // 2. Render Template
     //Render body
@@ -349,7 +368,7 @@ $cradle->get('/admin/role/auth/create', function ($request, $response) {
 
     $body = $this
         ->package('cradlephp/cradle-role')
-        ->template('auth/form', $data);
+        ->template('access/form', $data);
 
     //Set Content
     $response
@@ -364,5 +383,58 @@ $cradle->get('/admin/role/auth/create', function ($request, $response) {
 
     //Render admin page
     $this->trigger('admin-render-page', $request, $response);
+});
+
+/**
+ * Process the Access Create
+ *
+ * @param Request $request
+ * @param Response $response
+ */
+$cradle->post('/admin/access/create', function ($request, $response) {
+    //----------------------------//
+    // 1. Process Request
+    cradle()->trigger('access-link', $request, $response);
+
+    //----------------------------//
+    // 2. Interpret Results
+    if ($response->isError()) {
+        $route = '/admin/access/create';
+        return $this->routeTo('get', $route, $request, $response);
+    }
+
+    //it was good
+    //add a flash
+    $this->package('global')->flash('Access was Created', 'success');
+
+    //redirect
+    $this->package('global')->redirect('/admin/access/search');
+});
+
+/**
+ * Process the Access Remove
+ *
+ * @param Request $request
+ * @param Response $response
+ */
+$cradle->get('/admin/access/:role_id/:role_auth_id/remove', function ($request, $response) {
+    //----------------------------//
+    // 1. Prepare Data
+    $data = $request->getStage();
+
+    cradle()->trigger('access-unlink', $request, $response);
+
+    //----------------------------//
+    // 4. Interpret Results
+    if ($response->isError()) {
+        return cradle()->triggerRoute('get', '/admin/access/search', $request, $response);
+    }
+
+    //it was good
+    //add a flash
+    cradle('global')->flash('Access was Removed', 'success');
+
+    //redirect
+    cradle('global')->redirect('/admin/access/search');
 });
 // Front End Controllers

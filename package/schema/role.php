@@ -145,7 +145,7 @@ return [
     ],
     'relations' => [
         [
-            'many' => '2',
+            'many' => '3',
             'name' => 'auth'
         ]
     ],
