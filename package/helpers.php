@@ -175,7 +175,6 @@ $this->package('cradlephp/cradle-role')
     $partials = []
 ) {
     // get the root directory
-    $type = ucwords($type);
     $root =  sprintf('%s/../src/template/', __DIR__);
 
 
