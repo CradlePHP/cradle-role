@@ -3,8 +3,6 @@
  * This file is part of a Custom Package.
  */
 
-// Back End Controllers
-
 /**
  * Renders a create form
  *
@@ -437,4 +435,3 @@ $cradle->get('/admin/access/:role_id/:role_auth_id/remove', function ($request, 
     //redirect
     cradle('global')->redirect('/admin/access/search');
 });
-// Front End Controllers
