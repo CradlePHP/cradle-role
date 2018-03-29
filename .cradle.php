@@ -8,9 +8,10 @@ require_once __DIR__ . '/src/controller.php';
 require_once __DIR__ . '/package/helpers.php';
 
 use Cradle\Event\EventHandler;
+use Cradle\Http\Router;
+use Cradle\Package\Role\Exception;
 
 $this->preprocess(function ($request, $response) {
-    //return true;
     // get default auth id
     $authId = $request->getSession('me', 'auth_id');
 
@@ -23,13 +24,19 @@ $this->preprocess(function ($request, $response) {
 
     // if session role permission override
     if($request->getSession('me', 'role_permissions')) {
-        $permissions = array_merge($permissions, $request->getSession('me', 'role_permissions'));
+        $permissions = array_merge(
+            $permissions,
+            $request->getSession('me', 'role_permissions')
+        );
     }
 
     // if role permission override
     if ($request->hasStage('role_permissions')) {
         // get role permissions
-        $permissions = array_merge($permissions, $request->getStage('role_permissions'));
+        $permissions = array_merge(
+            $permissions,
+            $request->getStage('role_permissions')
+        );
     }
 
     // allow auth id 1
@@ -45,7 +52,7 @@ $this->preprocess(function ($request, $response) {
     }
 
     // initialize router
-    $router = new \Cradle\Http\Router;
+    $router = new Router;
 
     // iterate on each permissions
     foreach($permissions as $permission) {
@@ -68,7 +75,7 @@ $this->preprocess(function ($request, $response) {
         return true;
     }
 
-    $this->response->setFlash('Request not Permitted', 'error');
+    $this->response->setFlash(Exception::ERROR_NOT_PERMITTED, 'error');
 
-    throw new Exception('Request not Permitted');
+    throw Exception::forNotPermitted();
 });
