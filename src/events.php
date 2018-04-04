@@ -207,8 +207,10 @@ $this->on('role-search', function ($request, $response) {
 $this->on('role-update', function ($request, $response) {
     //set role as schema
     $request->setStage('schema', 'role');
+    
+    $data = $request->getStage();
 
-    if ($data['role_permissions']) {
+    if (isset($data['role_permissions']) && is_array($data['role_permissions'])) {
         $request->setStage('role_permissions', json_encode($data['role_permissions']));
     }
 
