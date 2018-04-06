@@ -2,32 +2,32 @@
     <ol class="breadcrumb">
         <li class="breadcrumb-item">
             <a href="/admin">
-                <i class="fas fa-home"></i> Admin
+                <i class="fas fa-home"></i> {{_ 'Admin'}}
             </a>
         </li>
         <li class="breadcrumb-item active" aria-current="page">
-            <i class="fas fa-key"></i> Roles
+            <i class="fas fa-key"></i> {{_ 'Roles'}}
         </li>
     </ol>
 </nav>
 
 <div class="main-padding">
 
-    <h3 class="main-title"><i class="fa fa-key"></i> Role Search Example</h3>
+    <h3 class="main-title"><i class="fa fa-key"></i> {{_ 'Role Search Example'}}</h3>
 
     <div class="clearfix mb-4 search-actions">
         <div class="btn-group" role="group" aria-label="...">
             <a class="btn btn-primary" href="?filter[role_active]=1">
-                Active
+                {{_ 'Active'}}
             </a>
             <a class="btn btn-danger" href="?filter[role_active]=0">
-                Inactive
+                {{_ 'Inactive'}}
             </a>
         </div>
 
         <div class="float-right">
             <a class="btn btn-success" href="/admin/role/create">
-                <i class="fas fa-plus"></i> Create Role
+                <i class="fas fa-plus"></i> {{_ 'Create Role'}}
             </a>
         </div>
     </div>
@@ -39,8 +39,8 @@
             <table class="table table-striped">
                 <thead>
                     <tr>
-                        <th>Actions</th>
-                        <th>Roles</th>
+                        <th>{{_ 'Actions'}}</th>
+                        <th>{{_ 'Roles'}}</th>
                     </tr>
                 </thead>
                 <tbody>
@@ -74,7 +74,7 @@
         {{else}}
             <!-- START: NO RESULTS -->
             <div class="alert alert-info no-results">
-                <center>No Results Found.</center>
+                <center>{{_ 'No Results Found'}}.</center>
             </div>
             <!-- END: NO RESULTS -->
         {{/if}}

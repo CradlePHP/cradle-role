@@ -14,12 +14,12 @@
     <ol class="breadcrumb">
         <li class="breadcrumb-item">
             <a href="/admin">
-                <i class="fas fa-home"></i> Admin
+                <i class="fas fa-home"></i> {{_ 'Admin'}}
             </a>
         </li>
         <li class="breadcrumb-item" aria-current="page">
             <a href="/admin/role/search">
-                <i class="fas fa-key"></i> Roles
+                <i class="fas fa-key"></i> {{_ 'Roles'}}
             </a>
         </li>
         <li class="breadcrumb-item active" aria-current="page">
@@ -32,7 +32,7 @@
     <h3 class="main-title"><i class="fa fa-key"></i> {{title}}</h3>
     <form enctype="multipart/form-data" method="post" data-do="permission-field">
         <div class="form-group">
-            <label class="control-label">Role Name</label>
+            <label class="control-label">{{_ 'Role Name'}}</label>
             <input
                 class="form-control {{#if errors.role_name}}is-invalid{{/if}}"
                 placeholder="Super Admin"
@@ -49,12 +49,12 @@
             {{/if}}
         </div>
         <div class="table-overflow {{#if errors.role_permissions}}form-control is-invalid{{/if}}">
-            <label class="control-label">Permissions</label>
+            <label class="control-label">{{_ 'Permissions'}</label>
             <div
-        </div>
+        </div>}
         <button type="button" class="btn btn-success permission-action-add">
             <i class="fas fa-plus"></i>
-            Add Permission
+            {{_ 'Add Permission'}}
         </button>
         <ul class="permission-list">
             {{#each item.role_permissions}}
@@ -64,7 +64,7 @@
         <div class="clear form-group">
             <hr/>
             <input type="hidden" name="csrf" value="" />
-            <button type="submit" class="btn btn-primary">Submit</button>
+            <button type="submit" class="btn btn-primary">{{_ 'Submit'}}</button>
         </div>
         <span class="help-text has-error"></span>
     </form>

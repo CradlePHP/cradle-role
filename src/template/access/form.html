@@ -2,21 +2,21 @@
     <ol class="breadcrumb">
         <li class="breadcrumb-item">
             <a href="/admin">
-                <i class="fas fa-home"></i> Admin
+                <i class="fas fa-home"></i> {{_ 'Admin'}}
             </a>
         </li>
         <li class="breadcrumb-item active" aria-current="page">
             <a href="/admin/role/search">
-                <i class="fas fa-key"></i> Roles
+                <i class="fas fa-key"></i> {{_ 'Roles'}}
             </a>
         </li>
         <li class="breadcrumb-item active" aria-current="page">
             <a href="/admin/access/search">
-                <i class="fas fa-lock-open"></i> Access
+                <i class="fas fa-lock-open"></i> {{_ 'Access'}}
             </a>
         </li>
         <li class="breadcrumb-item active" aria-current="page">
-            Create Access
+            {{_ 'Create Access'}}
         </li>
     </ol>
 </nav>
@@ -25,12 +25,12 @@
     <form class="box" method="post">
         <div class="box-head box-success">
             <div class="box-title">
-                <i class="fa fa-lock-open"></i> Create Access
+                <i class="fa fa-lock-open"></i> {{_ 'Create Access'}}
             </div>
         </div>
         <div class="box-body box-padding">
             <div class="form-group">
-                <label class="control-label">Role</label>
+                <label class="control-label">{{_ 'Role'}}</label>
                 <div>
                     <input
                         autocomplete="off"
@@ -63,7 +63,7 @@
                 </div>
             </div>
             <div class="form-group">
-                <label class="control-label">Auth</label>
+                <label class="control-label">{{_ 'Auth'}}</label>
                 <div>
                     <input
                         autocomplete="off"
@@ -98,7 +98,7 @@
         </div>
         <div class="box-foot box-light">
             <div class="box-left">
-                <button type="submit" class="btn btn-primary">Submit</button>
+                <button type="submit" class="btn btn-primary">{{_ 'Submit'}}</button>
             </div>
         </div>
     </form>
