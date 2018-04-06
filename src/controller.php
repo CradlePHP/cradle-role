@@ -19,7 +19,7 @@ $this->get('/admin/role/create', function ($request, $response) {
         $request->setStage('role_id', $request->getStage('copy'));
 
         // get role detail
-        cradle()->trigger('role-detail', $request, $response);
+        $this->trigger('role-detail', $request, $response);
 
         $data['item'] = [
             'role_permissions' => $response->getResults('role_permissions')
@@ -203,7 +203,7 @@ $this->get('/admin/role/search', function ($request, $response) {
 $this->get('/admin/role/update/:role_id', function ($request, $response) {
     // 1. Prepare Data
     // trigger role detail
-    cradle()->trigger('role-detail', $request, $response);
+    $this->trigger('role-detail', $request, $response);
 
     // get role details
     $data['item'] = $response->getResults();
@@ -283,7 +283,7 @@ $this->post('/admin/role/create', function ($request, $response) {
 $this->post('/admin/role/update/:role_id', function ($request, $response) {
     //----------------------------//
     // 1. Process Request
-    cradle()->trigger('role-update', $request, $response);
+    $this->trigger('role-update', $request, $response);
 
     //----------------------------//
     // 2. Interpret Results
@@ -392,7 +392,7 @@ $cradle->get('/admin/access/create', function ($request, $response) {
 $cradle->post('/admin/access/create', function ($request, $response) {
     //----------------------------//
     // 1. Process Request
-    cradle()->trigger('access-link', $request, $response);
+    $this->trigger('access-link', $request, $response);
 
     //----------------------------//
     // 2. Interpret Results
@@ -420,7 +420,7 @@ $cradle->get('/admin/access/:role_id/:role_auth_id/remove', function ($request, 
     // 1. Prepare Data
     $data = $request->getStage();
 
-    cradle()->trigger('access-unlink', $request, $response);
+    $this->trigger('access-unlink', $request, $response);
 
     //----------------------------//
     // 4. Interpret Results
