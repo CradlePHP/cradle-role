@@ -23,7 +23,7 @@ class Exception extends BaseException
     /**
      * @const string ERROR_NOT_PERMITTED Error template
      */
-    const ERROR_NOT_PERMITTED = 'Requestnot Permitted';
+    const ERROR_NOT_PERMITTED = 'Request not Permitted';
 
     /**
      * Create a new exception for permissions error
