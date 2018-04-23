@@ -22,7 +22,7 @@ $this->on('role-create', function ($request, $response) {
     //set role as schema
     $request->setStage('schema', 'role');
 
-    if ($data['role_permissions']) {
+    if (isset($data['role_permissions'])) {
         $request->setStage('role_permissions', json_encode($data['role_permissions']));
     }
 

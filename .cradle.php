@@ -45,7 +45,7 @@ $this->preprocess(function ($request, $response) {
         return true;
     }
 
-    //  path
+    // path
     $home = $this->package('global')->config('settings', 'home');
     if ($request->getPath('string') === $home
     || empty($request->getPath('string'))) {

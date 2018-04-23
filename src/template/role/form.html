@@ -48,18 +48,25 @@
             </div>
             {{/if}}
         </div>
-        <div class="table-overflow {{#if errors.role_permissions}}form-control is-invalid{{/if}}">
-            <label class="control-label">{{_ 'Permissions'}}</label>
+        <div class="form-group">
+            <label class="control-label">{{_ 'Permissions'}}</label>            
+            <div class="table-overflow {{#if errors.role_permissions}}form-control is-invalid{{/if}}">
+                <button type="button" class="btn btn-success permission-action-add">
+                    <i class="fas fa-plus"></i>
+                    {{_ 'Add Permission'}}
+                </button>
+                <ul class="permission-list m-0">
+                    {{#each item.role_permissions}}
+                        {{> role_permission}}
+                    {{/each}}
+                </ul>
+            </div>
+            {{#if errors.role_permissions}}
+            <div class="invalid-feedback">
+                {{errors.role_permissions}}
+            </div>
+            {{/if}}
         </div>
-        <button type="button" class="btn btn-success permission-action-add">
-            <i class="fas fa-plus"></i>
-            {{_ 'Add Permission'}}
-        </button>
-        <ul class="permission-list">
-            {{#each item.role_permissions}}
-                {{> role_permission}}
-            {{/each}}
-        </ul>
         <div class="clear form-group">
             <hr/>
             <input type="hidden" name="csrf" value="" />
