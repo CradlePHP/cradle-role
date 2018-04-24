@@ -17,7 +17,13 @@
 </nav>
 
 <div class="main-padding">
-    <h3 class="main-title"><i class="fa fa-lock-open"></i> {{title}}</h3>
+    <h3 class="main-title">
+        <i class="fa fa-lock-open"></i>
+        {{number total}} {{_ 'Access'}}
+        {{#if q.0}}
+            {{_ 'matching'}} {{q.0}}
+        {{/if}}
+    </h3>
     <div class="clearfix mb-4 search-actions">
         <div class="float-right">
             <a class="btn btn-success" href="/admin/access/create">
@@ -51,7 +57,7 @@
                                     <a href="/admin/role/update/{{role_id}}">{{role_name}}</a>
                                 </td>
                                 <td>
-                                    {{auth_slug}}
+                                    <a href="/admin/system/model/auth/search?filter[auth_slug]={{auth_slug}}">{{auth_slug}}</a>
                                 </td>
                             </tr>
                         {{/each}}

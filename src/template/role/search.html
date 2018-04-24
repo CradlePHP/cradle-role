@@ -12,8 +12,23 @@
 </nav>
 
 <div class="main-padding">
-
-    <h3 class="main-title"><i class="fa fa-key"></i> {{_ 'Role Search Example'}}</h3>
+    {{#when filter.role_active '===' '0'}}
+        <h3 class="main-title">
+            <i class="fa fa-key"></i>
+            {{number total}} {{_ 'Inactive Roles'}}
+            {{#if q.0}}
+                {{_ 'matching'}} {{q.0}}
+            {{/if}}
+        </h3>
+    {{else}}
+        <h3 class="main-title">
+            <i class="fa fa-key"></i>
+            {{number total}} {{_ 'Roles'}}
+            {{#if q.0}}
+                {{_ 'matching'}} {{q.0}}
+            {{/if}}
+        </h3>
+    {{/when}}
 
     <div class="clearfix mb-4 search-actions">
         <div class="btn-group" role="group" aria-label="...">
@@ -41,11 +56,13 @@
                     <tr>
                         <th>{{_ 'Actions'}}</th>
                         <th>{{_ 'Roles'}}</th>
+                        <th>{{_ 'Created'}}</th>
+                        <th>{{_ 'Updated'}}</th>
                     </tr>
                 </thead>
                 <tbody>
                     {{#each rows}}
-                        <tr data-id="{{role_id}}" {{#if role_flag}}class="table-info"{{/if}}>
+                        <tr data-id="{{role_id}}">
                             <td>
                                 {{#if ../filter.role_active}}
                                     <a class="text-purple" title="Copy" href="/admin/role/create/?copy={{role_id}}">
@@ -54,10 +71,14 @@
                                     <a class="text-info" title="Edit" href="/admin/role/update/{{role_id}}">
                                     <i class="fas fa-edit"></i></a>
                                     &nbsp;
-                                    {{#unless role_flag}}
+                                    {{#if role_flag}}
+                                    <a class="text-dark">
+                                        <i class="fas fa-lock"></i>
+                                    </a>
+                                    {{else}}
                                     <a class="text-danger" title="Remove" href="/admin/role/remove/{{role_id}}"
                                     class="text-danger remove"><i class="fas fa-times"></i></a>
-                                    {{/unless}}
+                                    {{/if}}
                                 {{else}}
                                     <a title="Restore" href="/admin/role/restore/{{role_id}}" class="text-success restore">
                                     <i class="fas fa-external-link-alt"></i></a>
@@ -65,6 +86,12 @@
                             </td>
                             <td>
                                 <a href="/admin/role/update/{{role_id}}"><i class="{{icon}}"></i> {{role_name}}</a>
+                            </td>
+                            <td>
+                                {{date role_created 'Y-m-d H:i:s'}}
+                            </td>
+                            <td>
+                                {{date role_updated 'Y-m-d H:i:s'}}
                             </td>
                         </tr>
                     {{/each}}
