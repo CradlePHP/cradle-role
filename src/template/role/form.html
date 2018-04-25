@@ -23,7 +23,11 @@
             </a>
         </li>
         <li class="breadcrumb-item active" aria-current="page">
-             {{title}}
+            {{#when action '===' 'create'}}
+                <i class="fas fa-plus"></i> {{title}}
+            {{else}}
+                <i class="fas fa-edit"></i> {{title}}
+            {{/when}}
         </li>
     </ol>
 </nav>

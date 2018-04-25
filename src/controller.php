@@ -36,6 +36,7 @@ $this->get('/admin/role/create', function ($request, $response) {
     //Render body
     $class = 'page-role-create';
     $data['title'] = $this->package('global')->translate('Role Create');
+    $data['action'] = 'create';
 
     $body = $this
         ->package('cradlephp/cradle-role')
@@ -363,6 +364,7 @@ $cradle->get('/admin/access/create', function ($request, $response) {
     //Render body
     $class = 'page-access-create';
     $data['title'] = $this->package('global')->translate('Access Create');
+    $data['action'] = 'create';
 
     $body = $this
         ->package('cradlephp/cradle-role')
