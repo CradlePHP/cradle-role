@@ -154,6 +154,7 @@ return [
             'role_name'         => 'Guest',
             'role_permissions'  => json_encode([
                 [
+                    "id"        => "6b05c32a4f03c9918df8acad76f0f9e1",
                     "path"      => "(?!/admin)/**",
                     "label"     => "Guest Access",
                     "method"    => "all"
@@ -167,6 +168,7 @@ return [
             'role_name'         => 'Rest',
             'role_permissions'  => json_encode([
                 [
+                    "id"        => "6bb019511f996c6d2b280324d2296ebb",
                     "path"      => "/rest/**",
                     "label"     => "Rest Access",
                     "method"    => "all"
