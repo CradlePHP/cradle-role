@@ -34,20 +34,22 @@ class Validator
         $schema = Schema::i('role');
 
         if (!isset($data['role']['auth_id']) || empty($data['role']['auth_id'])) {
-            $errors['auth_id'] = 'Auth Id is required';
+            $errors['auth_id'] = 'Auth ID is required';
         } else {
             $exists = $schema->model()->service('sql')->getResource()
                 ->search('role_auth')
+                ->addFilter('role_id = %s', $data['role']['role_id'])
                 ->addFilter('auth_id = %s', $data['role']['auth_id'])
                 ->getRow();
 
             if($exists) {
-                $errors['auth_id'] = 'Auth Exists';
+                $errors['role_id'] = 'Access already exists';                
+                $errors['auth_id'] = 'Access already exists';
             }
         }
 
         if (!isset($data['role']['role_id']) || empty($data['role']['role_id'])) {
-            $errors['role_id'] = 'Role Id is required';
+            $errors['role_id'] = 'Role ID is required';
         }
 
         return $errors;

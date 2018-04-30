@@ -16,14 +16,19 @@ $this->get('/admin/role/create', function ($request, $response) {
 
     // if has copy
     if ($request->hasStage('copy')) {
+        // set the role id
         $request->setStage('role_id', $request->getStage('copy'));
 
         // get role detail
         $this->trigger('role-detail', $request, $response);
 
-        $data['item'] = [
-            'role_permissions' => $response->getResults('role_permissions')
-        ];
+        // get the item
+        $data['item'] = $response->getResults();
+
+        // let them copy the default roles
+        if (isset($data['item']['role_flag'])) {
+            unset($data['item']['role_flag']);
+        }        
     }
 
     if ($response->isError()) {
@@ -57,6 +62,20 @@ $this->get('/admin/role/create', function ($request, $response) {
 
     //Render blank page
     $this->trigger('admin-render-page', $request, $response);
+});
+
+/**
+ * Overrides model role create form
+ * 
+ * @param Request $request
+ * @param Response $response
+ */
+$this->get('/admin/system/model/role/create', function ($request, $response) {
+    // do not render
+    $request->setStage('render', 'false');
+
+    // re-route to our custom handler
+    return $this->routeTo('get', '/admin/role/create', $request, $response);
 });
 
 /**
@@ -245,6 +264,28 @@ $this->get('/admin/role/update/:role_id', function ($request, $response) {
 });
 
 /**
+ * Overrides model role update form
+ * 
+ * @param Request $request
+ * @param Response $response
+ */
+$this->get('/admin/system/model/role/update/:role_id', function ($request, $response) {
+    // do not render
+    $request->setStage('render', 'false');
+
+    // re-route to our custom handler
+    return $this->routeTo(
+        'get', 
+        sprintf(
+            '/admin/role/update/%s', 
+            $request->getStage('role_id')
+        ),
+        $request, 
+        $response
+    );
+});
+
+/**
  * Processes a create form
  *
  * @param Request $request
@@ -254,6 +295,32 @@ $this->post('/admin/role/create', function ($request, $response) {
     //----------------------------//
     // 1. Prepare Data
     $data = $request->getStage();
+
+    $permissions = [];
+
+    if (isset($data['role_permissions'])) {
+        $permissions = $data['role_permissions'];
+    }
+
+    // if we have permissions
+    if (is_array($permissions)) {
+        // create unique ids for permissions
+        foreach($permissions as $index => $permission) {
+            // if id is already generated
+            if (isset($permission['id'])) {
+                continue;
+            }
+
+            // set permission id
+            $permissions[$index]['id'] = md5(uniqid() . uniqid());
+        }
+
+        // update role permissions
+        $data['role_permissions'] = $permissions;
+    }
+
+    // update stage
+    $request->setStage($data);
 
     //----------------------------//
     // 2. Process Request
@@ -284,6 +351,34 @@ $this->post('/admin/role/create', function ($request, $response) {
 $this->post('/admin/role/update/:role_id', function ($request, $response) {
     //----------------------------//
     // 1. Process Request
+    $data = $request->getStage();
+
+    $permissions = [];
+
+    if (isset($data['role_permissions'])) {
+        $permissions = $data['role_permissions'];
+    }
+
+    // if we have permissions
+    if (is_array($permissions)) {
+        // create unique ids for permissions
+        foreach($permissions as $index => $permission) {
+            // if id is already generated
+            if (isset($permission['id'])) {
+                continue;
+            }
+
+            // set permission id
+            $permissions[$index]['id'] = md5(uniqid() . uniqid());
+        }
+
+        // update role permissions
+        $data['role_permissions'] = $permissions;
+    }
+
+    // update stage
+    $request->setStage($data);
+
     $this->trigger('role-update', $request, $response);
 
     //----------------------------//
