@@ -207,7 +207,7 @@ $this->on('role-search', function ($request, $response) {
 $this->on('role-update', function ($request, $response) {
     //set role as schema
     $request->setStage('schema', 'role');
-    
+
     $data = $request->getStage();
 
     if (isset($data['role_permissions']) && is_array($data['role_permissions'])) {
@@ -218,6 +218,51 @@ $this->on('role-update', function ($request, $response) {
     $this->trigger('system-model-update', $request, $response);
 });
 
+/**
+ * Auth Roles Job
+ *
+ * @param Request $request
+ * @param Response $response
+ */
+$this->on('auth-roles', function ($request, $response) {
+    //----------------------------//
+    // 1. Get Data
+    $data = $request->getStage();
+
+    // set schema
+    $schema = Schema::i('auth');
+
+    // get role
+    // filter by auth id
+    $search = $schema->model()->service('sql')->getResource()
+        ->search($schema->getName())
+        ->leftJoinUsing('role_auth', 'auth_id')
+        ->leftJoinUsing('role', 'role_id')
+        ->addFilter('auth_id = %s', $data['auth_id']);
+
+    $rows = $search->getRows();
+
+    $roles = [];
+
+    foreach ($rows as $key => $row) {
+        // prepare data
+        if ($row['role_permissions']) {
+            $rows[$key]['role_permissions'] = json_decode($row['role_permissions'], true);
+        } else {
+            // set default permissions
+            $rows[$key]['role_permissions'][] = [
+                'path'      => '(?!/admin)/**',
+                'label'     => 'Guest Access',
+                'method'    => 'all'
+            ];
+        }
+
+        $roles[$row['role_id']] = $rows[$key];
+    }
+
+    // set response results
+    $response->setResults($roles);
+});
 
 /**
  * Auth Detail Job
