@@ -28,7 +28,7 @@ $this->get('/admin/role/create', function ($request, $response) {
         // let them copy the default roles
         if (isset($data['item']['role_flag'])) {
             unset($data['item']['role_flag']);
-        }        
+        }
     }
 
     if ($response->isError()) {
@@ -45,9 +45,13 @@ $this->get('/admin/role/create', function ($request, $response) {
 
     $body = $this
         ->package('cradlephp/cradle-role')
-        ->template('role/form', $data, [
-            'role_permission'
-        ]);
+        ->template(
+            'role/form',
+            $data,
+            ['role_permission'],
+            $response->getPage('template_root'),
+            $response->getPage('partials_root')
+        );
 
     //Set Content
     $response
@@ -66,7 +70,7 @@ $this->get('/admin/role/create', function ($request, $response) {
 
 /**
  * Overrides model role create form
- * 
+ *
  * @param Request $request
  * @param Response $response
  */
@@ -197,7 +201,13 @@ $this->get('/admin/role/search', function ($request, $response) {
 
     $body = $this
         ->package('cradlephp/cradle-role')
-        ->template('role/search', $data);
+        ->template(
+            'role/search',
+            $data,
+            [],
+            $response->getPage('template_root'),
+            $response->getPage('partials_root')
+        );
 
     //Set Content
     $response
@@ -244,9 +254,13 @@ $this->get('/admin/role/update/:role_id', function ($request, $response) {
 
     $body = $this
         ->package('cradlephp/cradle-role')
-        ->template('role/form', $data, [
-            'role_permission'
-        ]);
+        ->template(
+            'role/form',
+            $data,
+            ['role_permission'],
+            $response->getPage('template_root'),
+            $response->getPage('partials_root')
+        );
 
     //Set Content
     $response
@@ -265,7 +279,7 @@ $this->get('/admin/role/update/:role_id', function ($request, $response) {
 
 /**
  * Overrides model role update form
- * 
+ *
  * @param Request $request
  * @param Response $response
  */
@@ -275,12 +289,12 @@ $this->get('/admin/system/model/role/update/:role_id', function ($request, $resp
 
     // re-route to our custom handler
     return $this->routeTo(
-        'get', 
+        'get',
         sprintf(
-            '/admin/role/update/%s', 
+            '/admin/role/update/%s',
             $request->getStage('role_id')
         ),
-        $request, 
+        $request,
         $response
     );
 });
@@ -421,7 +435,13 @@ $cradle->get('/admin/access/search', function ($request, $response) {
 
     $body = $this
         ->package('cradlephp/cradle-role')
-        ->template('access/search', $data);
+        ->template(
+            'access/search',
+            $data,
+            [],
+            $response->getPage('template_root'),
+            $response->getPage('partials_root')
+        );
 
     //Set Content
     $response
@@ -463,7 +483,13 @@ $cradle->get('/admin/access/create', function ($request, $response) {
 
     $body = $this
         ->package('cradlephp/cradle-role')
-        ->template('access/form', $data);
+        ->template(
+            'access/form',
+            $data,
+            [],
+            $response->getPage('template_root'),
+            $response->getPage('partials_root')
+        );
 
     //Set Content
     $response

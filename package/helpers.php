@@ -172,11 +172,22 @@ $this->package('cradlephp/cradle-role')
 ->addMethod('template', function (
     $file,
     array $data = [],
-    $partials = []
+    $partials = [],
+    $customFileRoot  = null,
+    $customPartialsRoot = null
 ) {
     // get the root directory
-    $root =  sprintf('%s/../src/template/', __DIR__);
+    $root =  $customFileRoot;
+    $partialRoot = $customPartialsRoot;
+    $originalRoot = sprintf('%s/../src/template/', __DIR__);
 
+    if (!$customFileRoot) {
+        $root = $originalRoot;
+    }
+
+    if (!$customPartialsRoot) {
+        $partialRoot =  $originalRoot;
+    }
 
     // check for partials
     if (!is_array($partials)) {
@@ -201,7 +212,7 @@ $this->package('cradlephp/cradle-role')
             $path = '_' . $path;
         }
 
-        $paths[$partial] = $root . $path;
+        $paths[$partial] = $partialRoot . $path;
     }
 
     $file = $root . $file . '.html';
