@@ -1,37 +1,21 @@
-## Role
+## Roles
 
-Deals with site wide roles and permissions
+By default, all users are locked out from accessing anything in the system. Roles gives users permission to access certain parts of the system based on URL rules.
 
 ## Install
 
 ```
 composer install cradlephp/cradle-role
+bin/cradle cradlephp/cradle-role install
+bin/cradle cradlephp/cradle-role sql-populate
 ```
 
-### Routes
+## Updating
 
- - `GET /admin/role/create`
- - `GET /admin/role/detail/:role_id`
- - `GET /admin/role/remove/:role_id`
- - `GET /admin/role/restore/:role_id`
- - `GET /admin/role/search`
- - `GET /admin/role/update/:role_id`
- - `POST /admin/role/create`
- - `POST /admin/role/update/:role_id`
- - `GET /admin/access/search`
- - `GET /admin/access/create`
- - `POST /admin/access/create`
- - `GET /admin/access/:role_id/:role_auth_id/remove`
+### updating to 0.1.* from 0.0.1
 
-### Events
-
- - `role-create`
- - `access-search`
- - `access-link`
- - `access-unlink`
- - `role-detail`
- - `role-remove`
- - `role-restore`
- - `role-search`
- - `role-update`
- - `auth-detail`
+```
+composer update
+cradle cradlephp/cradle-role update
+bin/cradle cradlephp/cradle-role sql-populate
+```

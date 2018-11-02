@@ -29,10 +29,10 @@ $this->on('cradlephp-cradle-role-install', function ($request, $response) {
 
     // if version is set
     if (is_array($current) && isset($current['version'])) {
-    	// get the current version
-    	$current = $current['version'];
+        // get the current version
+        $current = $current['version'];
     } else {
-    	$current = null;
+        $current = null;
     }
 
     //if it's already installed
@@ -46,8 +46,8 @@ $this->on('cradlephp-cradle-role-install', function ($request, $response) {
 
     // update the config
     $this->package('global')->config('packages', $name, [
-    	'version' => $version,
-    	'active' => true
+        'version' => $version,
+        'active' => true
     ]);
 
     $response->setResults('version', $version);

@@ -1,0 +1,137 @@
+<style>
+    .permission-list {
+        list-style: none;
+        padding: 0;
+    }
+
+    .permission-list .permission-input {
+        margin-top: 10px;
+    }
+</style>
+
+<div
+    data-do="permissions"
+    data-row-name="role_permissions"
+    data-row-template="#access-row"
+>
+    <button type="button" class="btn btn-success permission-add">
+        <i class="fas fa-plus"></i>
+        {{_ 'Add Permission'}}
+    </button>
+    <ul class="permission-list m-0" >
+        {{#each ../item.role_permissions}}
+            <li class="permission-item">
+                <div class="permission-input input-group{{#has ../errors.permissions @index}} has-error{{/has}}">
+                    <input
+                        class="form-control field-label"
+                        name="role_permissions[{{@index}}][label]"
+                        placeholder="Label"
+                        type="text"
+                        value="{{label}}"
+                    />
+                    <select
+                        class="form-control field-method"
+                        name="role_permissions[{{@index}}][method]"
+                    >
+                            <option value="all" {{#when method '==' 'all'}}selected="selected"{{/when}}>ALL</option>
+                            <option value="get" {{#when method '==' 'get'}}selected="selected"{{/when}}>GET</option>
+                            <option value="post" {{#when method '==' 'post'}}selected="selected"{{/when}}>POST</option>
+                            <option value="put" {{#when method '==' 'put'}}selected="selected"{{/when}}>PUT</option>
+                            <option value="delete" {{#when method '==' 'delete'}}selected="selected"{{/when}}>DELETE</option>
+                    </select>
+                    <input
+                        class="form-control field-path"
+                        name="role_permissions[{{@index}}][path]"
+                        placeholder="/some/path"
+                        type="text"
+                        value="{{path}}"
+                    />
+                    <div class="input-group-append">
+                        <button class="btn btn-danger permission-remove" type="button">
+                            <i class="fas fa-times"></i>
+                        </button>
+                    </div>
+                </div>
+                {{#scope ../errors.permissions @index}}
+                    {{#if path}}<span class="help-text text-danger">{{path}}</span>{{/if}}
+                    {{#if label}}<span class="help-text text-danger">{{label}}</span>{{/if}}
+                {{/scope}}
+            </li>
+        {{/each}}
+    </ul>
+</div>
+{{#if errors.role_permissions}}
+    <div class="invalid-feedback">
+        {{errors.role_permissions}}
+    </div>
+{{/if}}
+
+<script id="access-row" type="text/x-template">
+    <li class="permission-item">
+        <div class="permission-input input-group">
+            <input
+                class="form-control field-label"
+                placeholder="Label"
+                type="text"
+            />
+            <select class="form-control field-method">
+                    <option value="all">ALL</option>
+                    <option value="get">GET</option>
+                    <option value="post">POST</option>
+                    <option value="put">PUT</option>
+                    <option value="delete">DELETE</option>
+            </select>
+            <input
+                class="form-control field-path"
+                placeholder="/some/path"
+                type="text"
+            />
+            <div class="input-group-append">
+                <button class="btn btn-danger permission-remove" type="button">
+                    <i class="fas fa-times"></i>
+                </button>
+            </div>
+        </div>
+    </li>
+</script>
+
+<script type="text/javascript">
+    $(window).on('permissions-init', function(e, target) {
+        var name = $(target).data('row-name');
+        var template = $($(target).data('row-template')).html();
+        var container = $('ul.permission-list', target);
+
+        container.children('li.permission-item').each(function() {
+            //on button remove click
+            $('button.permission-remove', this).click(function() {
+                $(this).closest('li.permission-item').remove();
+                reindex(container);
+            });
+        });
+
+        $('button.permission-add', target).click(function() {
+            var index = container.children('li.permission-item').length;
+            var row = $(template);
+
+            $('input.field-label', row).attr('name', name + '[' + index + '][label]');
+            $('select.field-method', row).attr('name', name + '[' + index + '][method]');
+            $('input.field-path', row).attr('name', name + '[' + index + '][path]');
+
+            container.append(row);
+
+            //on button remove click
+            $('button.permission-remove', row).click(function() {
+                $(this).closest('li.permission-item').remove();
+                reindex(container);
+            });
+        });
+
+        var reindex = function(list, path) {
+            container.children('li.permission-item').each(function(index) {
+                $('input.field-label', this).attr('name', name + '[' + index + '][label]');
+                $('select.field-method', this).attr('name', name + '[' + index + '][method]');
+                $('input.field-path', this).attr('name', name + '[' + index + '][path]');
+            });
+        };
+    });
+</script>

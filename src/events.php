@@ -1,316 +1,89 @@
 <?php //-->
 /**
- * This file is part of a Custom Package.
+ * This file is part of a package designed for the CradlePHP Project.
+ *
+ * Copyright and license information can be found at LICENSE.txt
+ * distributed with this package.
  */
-use Cradle\Package\System\Schema;
-use Cradle\Package\Role\Validator as RoleValidator;
+
+use Cradle\Package\System\Schema\Service;
 
 /**
- * Creates a role
+ * Render admin page
  *
  * @param Request $request
  * @param Response $response
  */
-$this->on('role-create', function ($request, $response) {
-    //----------------------------//
-    // 1. Get Data
-    $data = [];
-    if($request->hasStage()) {
-        $data = $request->getStage();
-    }
+$this->on('admin-render-page', function ($request, $response) {
+    $menu = $request->getSession('role', 'role_admin_menu');
 
-    //set role as schema
-    $request->setStage('schema', 'role');
+    $this->package('global')
+        ->handlebars()
+        ->registerHelper('nav_match', function (...$args) use ($request) {
+            //$haystack, $needle, $options
+            $haystack = $request->get('path', 'string');
+            $needle = array_shift($args);
+            $options = array_pop($args);
 
-    if (isset($data['role_permissions'])) {
-        $request->setStage('role_permissions', json_encode($data['role_permissions']));
-    }
+            foreach ($args as $path) {
+                $needle .= '/' . $path;
+            }
 
-    //trigger model create
-    $this->trigger('system-model-create', $request, $response);
-});
+            if (strpos($needle, '?') > 0) {
+                $needle = substr($needle, 0, strpos($needle, '?'));
+            }
 
-/**
- * Searches access
- *
- * @param Request $request
- * @param Response $response
- */
-$this->on('access-search', function ($request, $response) {
-    //----------------------------//
-    // 1. Get Data
-    $data = [];
-    if($request->hasStage()) {
-        $data = $request->getStage();
-    }
+            if (strpos($haystack, $needle) === 0) {
+                return $options['fn']();
+            }
 
-    $range = 50;
-    $start = 0;
+            return $options['inverse']();
+        });
 
-    if (isset($data['range']) && is_numeric($data['range'])) {
-        $range = $data['range'];
-    }
+    // get the schema name
+    $schema = $this
+        ->package('global')
+        ->config('services', 'sql-main')['name'];
 
-    if (isset($data['start']) && is_numeric($data['start'])) {
-        $start = $data['start'];
-    }
+    // get table record count
+    $records = Service::get('sql')->getSchemaTableRecordCount($schema);
 
-    $schema = Schema::i('role');
+    // map menu
+    $map = function($menu, $records) use (&$map) {
+        // iterate on each navigation
+        foreach ($menu as $i => $item) {
+            // do we have child menu?
+            if (isset($item['children']) && is_array($item['children'])) {
+                // recurse through child menu
+                $menu[$i]['children'] = $map($item['children'], $records);
+            }
 
-    $search = $schema->model()->service('sql')->getResource()
-        ->search($schema->getName())
-        ->setStart($start)
-        ->setRange($range)
-        ->innerJoinUsing('role_auth', 'role_id')
-        ->innerJoinUsing('auth', 'auth_id');
+            // iterate on each record count
+            foreach ($records as $count) {
+                // build out the criteria
+                $criteria = sprintf('/%s/search', $count['table_name']);
 
-    $results = [
-        'rows' => $search->getRows(),
-        'total' => $search->getTotal()
-    ];
-
-    //set response format
-    $response->setError(false)->setResults($results);
-});
-
-/**
- * Create access
- *
- * @param Request $request
- * @param Response $response
- */
-$this->on('access-link', function ($request, $response) {
-    //----------------------------//
-    // 1. Get Data
-    $data = [];
-    if ($request->hasStage()) {
-        $data = $request->getStage();
-    }
-
-    //----------------------------//
-    // 2. Validate Data
-    $errors = RoleValidator::getAccessErrors($data);
-
-    //if there are errors
-    if (!empty($errors)) {
-        return $response
-            ->setError(true, 'Invalid Parameters')
-            ->set('json', 'validation', $errors);
-    }
-
-    $data = $data['role'];
-
-    //----------------------------//
-    // 3. Process Data
-    $schema = Schema::i('role');
-
-    $results = $schema->model()->service('sql')->getResource()
-        ->model()
-        ->setRoleId($data['role_id'])
-        ->setAuthId($data['auth_id'])
-        ->insert('role_auth');
-
-    //return response format
-    $response->setError(false)->setResults($results);
-});
-
-/**
- * Remove access
- *
- * @param Request $request
- * @param Response $response
- */
-$this->on('access-unlink', function ($request, $response) {
-    //----------------------------//
-    // 1. Get Data
-    $data = [];
-    if ($request->hasStage()) {
-        $data = $request->getStage();
-    }
-
-    //----------------------------//
-    // 2. Process Data
-    $schema = Schema::i('role');
-
-    $results = $schema->model()->service('sql')->getResource()
-        ->model()
-        ->setRoleId($data['role_id'])
-        ->setAuthId($data['role_auth_id'])
-        ->remove('role_auth');
-
-    //return response format
-    $response->setError(false)->setResults($results);
-});
-
-/**
- * Creates a role
- *
- * @param Request $request
- * @param Response $response
- */
-$this->on('role-detail', function ($request, $response) {
-    //set role as schema
-    $request->setStage('schema', 'role');
-
-    //trigger model detail
-    $this->trigger('system-model-detail', $request, $response);
-});
-
-/**
- * Removes a role
- *
- * @param Request $request
- * @param Response $response
- */
-$this->on('role-remove', function ($request, $response) {
-    //set role as schema
-    $request->setStage('schema', 'role');
-
-    //trigger model remove
-    $this->trigger('system-model-remove', $request, $response);
-});
-
-/**
- * Restores a role
- *
- * @param Request $request
- * @param Response $response
- */
-$this->on('role-restore', function ($request, $response) {
-    //set role as schema
-    $request->setStage('schema', 'role');
-
-    //trigger model restore
-    $this->trigger('system-model-restore', $request, $response);
-});
-
-/**
- * Searches role
- *
- * @param Request $request
- * @param Response $response
- */
-$this->on('role-search', function ($request, $response) {
-    //set role as schema
-    $request->setStage('schema', 'role');
-
-    //trigger model search
-    $this->trigger('system-model-search', $request, $response);
-});
-
-/**
- * Updates a role
- *
- * @param Request $request
- * @param Response $response
- */
-$this->on('role-update', function ($request, $response) {
-    //set role as schema
-    $request->setStage('schema', 'role');
-
-    $data = $request->getStage();
-
-    if (isset($data['role_permissions']) && is_array($data['role_permissions'])) {
-        $request->setStage('role_permissions', json_encode($data['role_permissions']));
-    }
-
-    //trigger model update
-    $this->trigger('system-model-update', $request, $response);
-});
-
-/**
- * Auth Roles Job
- *
- * @param Request $request
- * @param Response $response
- */
-$this->on('auth-roles', function ($request, $response) {
-    //----------------------------//
-    // 1. Get Data
-    $data = $request->getStage();
-
-    // set schema
-    $schema = Schema::i('auth');
-
-    // get role
-    // filter by auth id
-    $search = $schema->model()->service('sql')->getResource()
-        ->search($schema->getName())
-        ->leftJoinUsing('role_auth', 'auth_id')
-        ->leftJoinUsing('role', 'role_id')
-        ->addFilter('auth_id = %s', $data['auth_id']);
-
-    $rows = $search->getRows();
-
-    $roles = [];
-
-    foreach ($rows as $key => $row) {
-        // prepare data
-        if ($row['role_permissions']) {
-            $rows[$key]['role_permissions'] = json_decode($row['role_permissions'], true);
-        } else {
-            // set default permissions
-            $rows[$key]['role_permissions'][] = [
-                'path'      => '(?!/admin)/**',
-                'label'     => 'Guest Access',
-                'method'    => 'all'
-            ];
+                // check the path based on criteria
+                if (strpos($item['path'], $criteria) > 0) {
+                    // set the record count
+                    $menu[$i]['records'] = $count['table_rows'];
+                }
+            }
         }
 
-        $roles[$row['role_id']] = $rows[$key];
-    }
+        return $menu;
+    };
 
-    // set response results
-    $response->setResults($roles);
-});
+    // map through navigation and set record count
+    $data['menu'] = $map($menu, $records);
 
-/**
- * Auth Detail Job
- *
- * @param Request $request
- * @param Response $response
- */
-$cradle->on('auth-detail', function ($request, $response) {
-    //if the auth-detail from auth returned an error
-    //----------------------------//
-    // 1. Check Error
-    if ($response->isError()) {
-        //do nothing
-        return;
-    }
+    $content = $this->package('cradlephp/cradle-system')->template(
+        '_menu',
+        $data,
+        'menu_item',
+        __DIR__ . '/template',
+        __DIR__ . '/template'
+    );
 
-    //----------------------------//
-    // 2. Get Response Data
-    $data = $response->getResults();
-
-    // set schema
-    $schema = Schema::i('auth');
-
-    // get role
-    // filter by auth id
-    $search = $schema->model()->service('sql')->getResource()
-        ->search($schema->getName())
-        ->leftJoinUsing('role_auth', 'auth_id')
-        ->leftJoinUsing('role', 'role_id')
-        ->addFilter('auth_id = %s', $data['auth_id']);
-
-    $row = $search->getRow();
-
-    // prepare data
-    if ($row['role_permissions']) {
-        $row['role_permissions'] = json_decode($row['role_permissions'], true);
-    } else {
-        // set default permissions
-        $row['role_permissions'][] = [
-            'path'      => '(?!/admin)/**',
-            'label'     => 'Guest Access',
-            'method'    => 'all'
-        ];
-    }
-
-    // merge results
-    $results = array_merge($data, $row);
-
-    // set response results
-    $response->setResults($results);
+    $response->setPage('aside', 'role_menu', $content);
 });

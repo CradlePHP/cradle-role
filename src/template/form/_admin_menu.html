@@ -1,0 +1,199 @@
+<div
+    class="menu-builder"
+    data-do="role-menu-builder"
+    data-depth="3"
+    data-name="role_admin_menu"
+    method="post"
+>
+    <button type="button" class="btn btn-success menu-builder-action-add">
+        <i class="fas fa-plus"></i>
+        Add Menu Item
+    </button>
+    <ol class="menu-builder-list">
+        {{#if ../item.role_admin_menu}}
+            {{#each ../item.role_admin_menu}}
+                {{> form_menu_item}}
+            {{/each}}
+        {{/if}}
+    </ol>
+    <span class="help-text has-error"></span>
+</div>
+
+<script type="text/html" id="menu-item">
+    <li class="menu-builder-item" data-level="{LEVEL}">
+        <div class="menu-builder-input input-group">
+            <div class="input-group-prepend">
+                <button class="menu-builder-handle btn btn-light" type="button">
+                    <i class="fas fa-arrows-alt fa-fw"></i>
+                </button>
+                <button class="menu-builder-handle btn btn-default" type="button">
+                    <i
+                        class="fas fa-question fa-fw"
+                        data-do="icon-field"
+                        data-target-parent="3"
+                    ></i>
+                    <input
+                        class="form-control"
+                        data-name="icon"
+                        type="hidden"
+                    />
+                </button>
+            </div>
+            <input
+                class="form-control"
+                data-name="label"
+                placeholder="Menu Title"
+                type="text"
+            />
+            <input
+                class="form-control"
+                data-name="path"
+                placeholder="/some/path"
+                type="text"
+            />
+            <div class="input-group-append">
+                {ACTION_ADD}
+                <button class="btn btn-danger menu-builder-action-remove" type="button">
+                    <i class="fas fa-times"></i>
+                </button>
+            </div>
+        </div>
+        <ol class="menu-builder-list"></ol>
+    </li>
+</script>
+
+<script type="text/javascript">
+    $(window).on('role-menu-builder-init', function(e, target) {
+        var itemTemplate = $('#menu-item').html();
+
+        var addTemplate =
+            '<button class="btn btn-success menu-builder-action-add" type="button">'
+                + '<i class="fas fa-plus"></i>'
+            + '</button>';
+
+        var name = $(target).attr('data-name') || 'menu';
+        var depth = $(target).attr('data-depth') || 9;
+        var message = $(target).attr('data-error') || 'Some items were empty';
+
+        var reindex = function(list, level, path) {
+            path = (path || 'menu') + '[{INDEX}]';
+            $(list).children('li.menu-builder-item').each(function(i) {
+                var newPath = path.replace('{INDEX}', i);
+                $('div.menu-builder-input:first', this).find('input').each(function() {
+                    var name = $(this).attr('data-name');
+                    if (!name || !name.length) {
+                        return;
+                    }
+
+                    $(this).attr('name', newPath + '[' + name + ']');
+                });
+                $('div.menu-builder-input:first', this).find('select').each(function() {
+                    var name = $(this).attr('data-name');
+                    var multiple = $(this).attr('multiple');
+
+                    if(!name || !name.length) {
+                        return;
+                    }
+
+                    if (multiple == 'multiple') {
+                        $(this).attr('name', newPath + '[' + name + '][]');
+                    } else {
+                        $(this).attr('name', newPath + '[' + name + ']');
+                    }
+                });
+
+                reindex($('ol.menu-builder-list:first', this), level + 1, newPath + '[children]');
+            });
+        };
+
+        var listen = function(item, level) {
+            //by default level 1
+            level = level || 1;
+            item = $(item);
+
+            //on button add click
+            $('button.menu-builder-action-add:first', item).click(function() {
+                //do we need the add action?
+                var add = '';
+                if(level < depth) {
+                    add = addTemplate;
+                }
+
+                //make the template
+                var newItem = $(
+                    itemTemplate
+                        .replace('{LEVEL}', level)
+                        .replace('{ACTION_ADD}', add)
+                ).doon();
+
+                //append the template
+                $('ol.menu-builder-list:first', item).append(newItem);
+
+                //reindex the names
+                reindex($('ol.menu-builder-list:first', target), level, name);
+
+                //listen to the item
+                listen(newItem, level + 1);
+            });
+
+            //on button remove click
+            $('button.menu-builder-action-remove:first', item).click(function() {
+                $(this).closest('li.menu-builder-item').remove();
+
+                //reindex the names
+                reindex($('ol.menu-builder-list:first', target), level, name);
+            });
+
+            return item;
+        };
+
+        var checkForm = function(e) {
+            var errors = false;
+            $('input[data-name="label"]', target).each(function() {
+                if(!$(this).val().trim().length) {
+                    $(this).parent().addClass('has-error');
+                    errors = true;
+                }
+            });
+
+            $('input[data-name="path"]', target).each(function() {
+                if(!$(this).val().trim().length) {
+                    $(this).parent().addClass('has-error');
+                    errors = true;
+                }
+            });
+
+            if(errors) {
+                $('span.help-text', target).html(message);
+                e.preventDefault();
+                return false;
+            }
+        };
+
+        //listen to the root
+        listen(target)
+            .submit(checkForm)
+            //find all the current elements
+            .find('li.menu-builder-item')
+            .each(function() {
+                listen(this).doon();
+            });
+
+        $.require('components/jquery-sortable/source/js/jquery-sortable-min.js', function() {
+            var root = $('ol.menu-builder-list:first');
+
+            root.sortable({
+                onDrop: function ($item, container, _super, event) {
+                    $item.removeClass(container.group.options.draggedClass).removeAttr('style');
+                    $('body').removeClass(container.group.options.bodyClass);
+
+                    setTimeout(function() {
+                        reindex(root, 1, name);
+                    }, 10);
+                }
+            });
+
+            reindex(root, 1, name);
+        });
+    });
+</script>
