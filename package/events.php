@@ -565,14 +565,18 @@ $this->on('cradlephp-cradle-role-sql-populate', function ($request, $response) {
             continue;
         }
 
-        $actionRequest = Request::i()->load();
-        $actionResponse = Response::i()->load();
-        foreach($data['fixtures'] as  $fixture) {
-            $actionRequest
+        //setup a new RnR
+        $payload = $this->makePayload();
+        foreach($data['fixtures'] as $fixture) {
+            $payload['request']
                 ->setStage($fixture)
                 ->setStage('schema', 'role');
 
-            $this->trigger('system-model-create', $actionRequest, $actionResponse);
+            $this->trigger(
+                'system-model-create',
+                $payload['request'],
+                $payload['response']
+            );
         }
     }
 });
