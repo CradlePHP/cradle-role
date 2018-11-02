@@ -7,6 +7,11 @@
  */
 
 return function ($request, $response) {
+    //prevent session in cli mode
+    if (php_sapi_name() === 'cli') {
+        return;
+    }
+
     $loggedin = $request->hasSession('me');
     //if there's already a role
     if ($request->hasSession('role')) {

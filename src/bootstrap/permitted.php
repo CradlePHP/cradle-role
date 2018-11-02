@@ -11,6 +11,11 @@ use Cradle\Http\Router;
 use Cradle\Package\Role\Exception;
 
 return function ($request, $response) {
+    //prevent session in cli mode
+    if (php_sapi_name() === 'cli') {
+        return;
+    }
+
     $permissions = $request->getSession('role', 'role_permissions');
 
     //make sure permissions is an array
