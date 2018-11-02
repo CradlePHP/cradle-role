@@ -1,19 +1,6 @@
 <?php //-->
 
 cradle(function() {
-    $source = dirname(__DIR__) . '/admin/src';
-    $destination = $this->package('global')->path('root')  . '/app/admin/src';
-
-    //typo on release
-    if (file_exists($destination . '/template/_side.php')) {
-        unlink($destination . '/template/_side.php');
-    }
-
-    copy(
-        $source . '/template/_side.html',
-        $destination . '/template/_side.html'
-    );
-
     //setup result counters
     $errors = [];
     $processed = [];
@@ -37,28 +24,31 @@ cradle(function() {
 
         //NOTE: Special way to redo the entire package setup
         //in this version there are major database changes
-        //setup a new RnR
-        $payload = $this->makePayload();
+        $schemaPath = $this->package('global')->path('schema');
+        if (file_exists($schemaPath . '/' . $file)) {
+            //setup a new RnR
+            $payload = $this->makePayload();
+            //set the data
+            $payload['request']->setStage('schema', $data['name']);
+            //this will permanently remove the file and table
+            $payload['request']->setStage('mode', 'permanent');
 
-        //set the data
-        $payload['request']->setStage('schema', $data['name']);
-        //this will permanently remove the file and table
-        $payload['request']->setStage('mode', 'permanent');
+            //remove the schema
+            $this->trigger(
+                'system-schema-remove',
+                $payload['request'],
+                $payload['response']
+            );
 
-        //remove the schema
-        $this->trigger(
-            'system-schema-remove',
-            $payload['request'],
-            $payload['response']
-        );
+            //clear cache
+            $this->package('global')->schema($data['name'], false);
+        }
 
         //setup a new RnR
         $payload = $this->makePayload();
 
         //set the data
         $payload['request']->setStage($data);
-
-        sleep(5);
 
         //----------------------------//
         // 1. Prepare Data
@@ -109,4 +99,43 @@ cradle(function() {
     }
 
     $this->getResponse()->setResults('schemas', $processed);
+
+    //lastly we want to update the admin files
+    $source = dirname(__DIR__) . '/admin/src';
+    $destination = $this->package('global')->path('root')  . '/app/admin/src';
+
+    copy(
+        $source . '/events.php',
+        $destination . '/events.php'
+    );
+
+    copy(
+        $source . '/template/_page.html',
+        $destination . '/template/_page.html'
+    );
+
+    copy(
+        $source . '/template/_side.html',
+        $destination . '/template/_side.html'
+    );
+
+    if (file_exists($destination . '/template/menu.html')) {
+        unlink($destination . '/template/menu.html');
+    }
+
+    if (file_exists($destination . '/template/_menu.html')) {
+        unlink($destination . '/template/_menu.html');
+    }
+
+    if (file_exists($destination . '/template/menu/_input.html')) {
+        unlink($destination . '/template/menu/_input.html');
+    }
+
+    if (file_exists($destination . '/template/menu/_item.html')) {
+        unlink($destination . '/template/menu/_item.html');
+    }
+
+    if (is_dir($destination . '/template/menu/')) {
+        rmdir($destination . '/template/menu');
+    }
 });
