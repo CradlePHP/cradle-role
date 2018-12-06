@@ -61,12 +61,12 @@ $this->on('admin-render-page', function ($request, $response) {
             // iterate on each record count
             foreach ($records as $count) {
                 // build out the criteria
-                $criteria = sprintf('/%s/search', $count['table_name']);
+                $criteria = sprintf('/%s/search', $count['TABLE_NAME']);
 
                 // check the path based on criteria
                 if (strpos($item['path'], $criteria) > 0) {
                     // set the record count
-                    $menu[$i]['records'] = $count['table_rows'];
+                    $menu[$i]['records'] = $count['TABLE_ROWS'];
                 }
             }
         }
