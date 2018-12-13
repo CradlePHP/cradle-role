@@ -167,29 +167,26 @@
                     </div>
                 </div>
             {{/relations}}
-
-            {{#each schema.fields}}
-                    {{#notin 'none,hide,active,created,updated,uuid' field.type}}
+            
+            {{#format 'field' schema.name item}}
+                {{#each formats}}
+                    {{#in 'role_permissions,role_admin_menu' @key}}
                         <div class="form-group{{#has ../errors @key}} has-error{{/has}}">
                             <label class="control-label">{{label}}</label>
-                            <div class="form-{{field.type}}">
-                                {{#in 'permissions,admin_menu' name}}
-                                    {{#when name '===' 'permissions'}}
-                                        {{> form_permissions}}
-                                    {{/when}}
-                                    {{#when name '===' 'admin_menu'}}
-                                        {{> form_admin_menu}}
-                                    {{/when}}
-                                {{else}}
-                                    {{> form_fields}}
-                                {{/in}}
-                                {{#has ../errors @key}}
-                                    <span class="help-text">{{scope ../errors @key}}</span>
-                                {{/has}}
+                            <div class="form-{{config.type}}">
+                                {{#when @key '===' 'role_permissions'}}
+                                    {{> form_permissions}}
+                                {{/when}}
+                                {{#when @key '===' 'role_admin_menu'}}
+                                    {{> form_admin_menu}}
+                                {{/when}}
                             </div>
                         </div>
-                    {{/notin}}
-            {{/each}}
+                    {{else}}
+                        {{> form_set}}
+                    {{/in}}
+                {{/each}}
+            {{/format}}
         </div>
         <div class="box-foot box-light">
             <div class="box-left">

@@ -10,8 +10,8 @@
         Add Menu Item
     </button>
     <ol class="menu-builder-list">
-        {{#if ../item.role_admin_menu}}
-            {{#each ../item.role_admin_menu}}
+        {{#if ../../item.role_admin_menu}}
+            {{#each ../../item.role_admin_menu}}
                 {{> form_menu_item}}
             {{/each}}
         {{/if}}
