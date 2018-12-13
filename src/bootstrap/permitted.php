@@ -19,8 +19,15 @@ return function ($request, $response) {
     $permissions = $request->getSession('role', 'role_permissions');
 
     //make sure permissions is an array
-    if (!is_array($permissions)) {
-        $permissions = [];
+    if (!is_array($permissions) || empty($permissions)) {
+        // allow front end access even without session
+        $permissions = [
+            [
+                'path' => '(?!/(admin))/**',
+                'label' => 'All Front End Access',
+                'method' => 'all'
+            ]
+        ];
     }
 
     // path
