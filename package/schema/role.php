@@ -224,6 +224,11 @@ return [
                             'label' => 'Schemas'
                         ],
                         [
+                            'icon' => 'fas fa-sliders-h',
+                            'path' => '/admin/system/fieldset/search',
+                            'label' => 'Fieldsets'
+                        ],
+                        [
                             'icon' => 'fas fa-cogs',
                             'path' => '/admin/configuration',
                             'label' => 'Configuration'

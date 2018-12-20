@@ -60,6 +60,16 @@ $this->on('admin-render-page', function ($request, $response) {
 
             // iterate on each record count
             foreach ($records as $count) {
+                //backwards compatibility
+                if (isset($count['table_name'])) {
+                    $count['TABLE_NAME'] = $count['table_name'];
+                }
+
+                //backwards compatibility
+                if (isset($count['table_rows'])) {
+                    $count['TABLE_ROWS'] = $count['table_rows'];
+                }
+
                 // build out the criteria
                 $criteria = sprintf('/%s/search', $count['TABLE_NAME']);
 
