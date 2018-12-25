@@ -104,38 +104,40 @@ cradle(function() {
     $source = dirname(__DIR__) . '/admin/src';
     $destination = $this->package('global')->path('root')  . '/app/admin/src';
 
-    copy(
-        $source . '/events.php',
-        $destination . '/events.php'
-    );
+    if (file_exists($source . '/template/_page.html')
+        && is_dir($destination . '/template/menu/')
+    ) {
+        copy(
+            $source . '/events.php',
+            $destination . '/events.php'
+        );
 
-    copy(
-        $source . '/template/_page.html',
-        $destination . '/template/_page.html'
-    );
+        copy(
+            $source . '/template/_page.html',
+            $destination . '/template/_page.html'
+        );
 
-    copy(
-        $source . '/template/_side.html',
-        $destination . '/template/_side.html'
-    );
+        copy(
+            $source . '/template/_side.html',
+            $destination . '/template/_side.html'
+        );
 
-    if (file_exists($destination . '/template/menu.html')) {
-        unlink($destination . '/template/menu.html');
-    }
+        if (file_exists($destination . '/template/menu.html')) {
+            unlink($destination . '/template/menu.html');
+        }
 
-    if (file_exists($destination . '/template/_menu.html')) {
-        unlink($destination . '/template/_menu.html');
-    }
+        if (file_exists($destination . '/template/_menu.html')) {
+            unlink($destination . '/template/_menu.html');
+        }
 
-    if (file_exists($destination . '/template/menu/_input.html')) {
-        unlink($destination . '/template/menu/_input.html');
-    }
+        if (file_exists($destination . '/template/menu/_input.html')) {
+            unlink($destination . '/template/menu/_input.html');
+        }
 
-    if (file_exists($destination . '/template/menu/_item.html')) {
-        unlink($destination . '/template/menu/_item.html');
-    }
+        if (file_exists($destination . '/template/menu/_item.html')) {
+            unlink($destination . '/template/menu/_item.html');
+        }
 
-    if (is_dir($destination . '/template/menu/')) {
         rmdir($destination . '/template/menu');
     }
 });
