@@ -167,7 +167,7 @@
                     </div>
                 </div>
             {{/relations}}
-            
+
             {{#format 'field' schema.name item}}
                 {{#each formats}}
                     {{#in 'role_permissions,role_admin_menu' @key}}
@@ -183,7 +183,7 @@
                             </div>
                         </div>
                     {{else}}
-                        {{> form_set}}
+                        {{> form_fieldset}}
                     {{/in}}
                 {{/each}}
             {{/format}}
