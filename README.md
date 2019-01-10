@@ -43,4 +43,4 @@ contribute to.
 [phpcs](https://github.com/squizlabs/PHP_CodeSniffer) before making a pull request.
 2. Push your code to your remote forked version.
 3. Go back to your forked version on GitHub and submit a pull request.
-4. All pull requests will be passed to [Travis CI](https://travis-ci.org/CradlePHP/cradle-profile) to be tested. Also note that [Coveralls](https://coveralls.io/github/CradlePHP/cradle-profile) is also used to analyze the coverage of your contribution.
+4. All pull requests will be passed to [Travis CI](https://travis-ci.org/CradlePHP/cradle-role) to be tested. Also note that [Coveralls](https://coveralls.io/github/CradlePHP/cradle-role) is also used to analyze the coverage of your contribution.
