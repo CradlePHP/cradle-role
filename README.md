@@ -1,8 +1,13 @@
 ## Roles
 
-By default, all users are locked out from accessing anything in the system. Roles gives users permission to access certain parts of the system based on URL rules.
+By default, all users are locked out from accessing anything in the system.
+Roles gives users permission to access certain parts of the system based on URL
+rules.
 
 ## Install
+
+If you already installed Cradle, you may not need to install this because it
+should be already included.
 
 ```
 composer install cradlephp/cradle-role
