@@ -42,7 +42,7 @@ $this->get('/admin/system/model/role/create', function ($request, $response) {
             'form_menu_input',
             file_get_contents(__DIR__ . '/template/form/menu/_input.html')
         );
-});
+}, 10);
 
 /**
  * Renders a create form
@@ -54,7 +54,7 @@ $this->get('/admin/system/model/role/search', function ($request, $response) {
     if (!$response->hasPage('partials_root')) {
         $response->setPage('partials_root', __DIR__ . '/template');
     }
-});
+}, 10);
 
 /**
  * Renders an update form
@@ -91,7 +91,7 @@ $this->get('/admin/system/model/role/update/:role_id', function ($request, $resp
             'form_menu_input',
             file_get_contents(__DIR__ . '/template/form/menu/_input.html')
         );
-});
+}, 10);
 
 /**
  * Processes a create form
@@ -113,7 +113,7 @@ $this->post('/admin/system/model/role/create', function ($request, $response) {
         'role_admin_menu',
         json_encode($adminMenu, JSON_PRETTY_PRINT)
     );
-});
+}, 10);
 
 /**
  * Processes an update form
@@ -135,4 +135,4 @@ $this->post('/admin/system/model/role/update/:role_id', function ($request, $res
         'role_admin_menu',
         json_encode($adminMenu, JSON_PRETTY_PRINT)
     );
-});
+}, 10);

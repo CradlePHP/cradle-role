@@ -96,4 +96,4 @@ $this->on('admin-render-page', function ($request, $response) {
     );
 
     $response->setPage('aside', 'role_menu', $content);
-});
+}, 10);
