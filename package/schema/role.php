@@ -4,6 +4,7 @@ return [
     'singular' => 'Role',
     'plural' => 'Roles',
     'name' => 'role',
+    'group' => 'Users',
     'icon' => 'fas fa-key',
     'detail' => 'By default, all users are locked out from accessing anything in the system. Roles gives users permission to access certain parts of the system based on URL rules.',
     'fields' => [
