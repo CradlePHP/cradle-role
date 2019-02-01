@@ -13,7 +13,6 @@ require_once __DIR__ . '/src/controller.php';
 //bootstrap
 $this
     ->preprocess(include __DIR__ . '/src/bootstrap/errors.php')
-    ->preprocess(include __DIR__ . '/src/bootstrap/schema.php')
     ->preprocess(include __DIR__ . '/src/bootstrap/permitted.php')
     ->preprocess(include __DIR__ . '/src/bootstrap/session.php');
 
