@@ -54,6 +54,8 @@ $this->on('admin-render-page', function ($request, $response) {
         foreach ($menu as $i => $item) {
             // do we have child menu?
             if (isset($item['children']) && is_array($item['children'])) {
+                //remove hash
+                $menu[$i]['path'] = str_replace('#', '', $menu[$i]['path']);
                 // recurse through child menu
                 $menu[$i]['children'] = $map($item['children'], $records);
             }
