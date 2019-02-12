@@ -10,23 +10,26 @@ return function ($request, $response) {
     //this happens on an error
     $this->error(function ($request, $response, $error) {
         // if an exception was thrown from the role package
-        if ($error instanceof \Cradle\Package\Role\Exception) {
-            $config = $this->package('global')->config('settings');
-
-            // set default redirect
-            $redirect = '/';
-
-            // if config home url is set
-            if (isset($config['home'])) {
-                // get the home url
-                $redirect = $config['home'];
-            }
-
-            // let them know
-            $this->package('global')->flash($error->getMessage(), 'error');
-
-            // redirect
-            return $this->package('global')->redirect($redirect);
+        if (!($error instanceof \Cradle\Package\Role\Exception)) {
+            return;
         }
+
+        $global = $this->package('global');
+        $config = $global->config('settings');
+
+        // set default redirect
+        $redirect = '/';
+
+        // if config home url is set
+        if (isset($config['home'])) {
+            // get the home url
+            $redirect = $config['home'];
+        }
+
+        // let them know
+        $global->flash($error->getMessage(), 'error');
+
+        // redirect
+        return $global->redirect($redirect);
     });
 };

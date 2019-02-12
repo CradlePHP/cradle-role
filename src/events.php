@@ -17,7 +17,9 @@ use Cradle\Package\System\Schema\Service;
 $this->on('admin-render-page', function ($request, $response) {
     $menu = $request->getSession('role', 'role_admin_menu');
 
-    $this->package('global')
+    $global = $this->package('global');
+
+    $global
         ->handlebars()
         ->registerHelper('nav_match', function (...$args) use ($request) {
             //$haystack, $needle, $options
@@ -41,9 +43,7 @@ $this->on('admin-render-page', function ($request, $response) {
         });
 
     // get the schema name
-    $schema = $this
-        ->package('global')
-        ->config('services', 'sql-main')['name'];
+    $schema = $global->config('services', 'sql-main')['name'];
 
     // get table record count
     $records = Service::get('sql')->getSchemaTableRecordCount($schema);
