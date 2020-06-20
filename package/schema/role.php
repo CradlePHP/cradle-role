@@ -233,11 +233,6 @@ return [
                             'icon' => 'fas fa-cogs',
                             'path' => '/admin/configuration',
                             'label' => 'Configuration'
-                        ],
-                        [
-                            'icon' => 'fas fa-plug',
-                            'path' => '/admin/package/search',
-                            'label' => 'Packages'
                         ]
                     ]
                 ],
