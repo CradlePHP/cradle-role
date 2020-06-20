@@ -20,7 +20,7 @@
         "php-coveralls/php-coveralls": "~2.1.0"
     },
     "require": {
-        "cradlephp/cradle-auth": "~2.2.0"
+        "cradlephp/cradle-auth": "~2.3.0"
     },
     "autoload": {
         "psr-4": {
